@@ -19,7 +19,7 @@
     "dev:deps": "docker-compose up -d elasticsearch",
     "dev:oidcdeps": "docker-compose up --build -d elasticsearch",
     "dev:oidc": "npm run dev:oidcdeps && export OIDC_ENABLED=true|| set OIDC_ENABLED=true&& npm run dev:nodemon",
-    "dev:nodemon": "nodemon --max-old-space-size=512 --ignore etc src/main/server.js",
+    "dev:nodemon": "nodemon --max-old-space-size=512 --ignore features --ignore etc src/main/server.js",
     "mocha": "wait-on http://localhost/api/ping && mocha -b node_modules/cassproject/src/**/*.test.js src/**/*.test.js",
     "mochafast": "wait-on http://localhost/api/ping && mocha -b src/**/*.test.js",
     "automocha": "nodemon --exec \"npm run mocha\"",

@@ -10,7 +10,7 @@ services:
     ports:
       - 80:80
     environment:
-      - LOOPBACK=http://cass/api/
+      - LOOPBACK=http://ldb/api/
       - ELASTICSEARCH_ENDPOINT=http://elasticsearch:9200
       - PORT=80
       # - OIDC_ENABLED=true # turns on open id login
@@ -88,16 +88,6 @@ volumes:
   etc:
     driver: local
   esdata1:
-    driver: local
-  esdata2:
-    driver: local
-  mysql_data:
-    driver: local
-  mariadb_data:
-    driver: local
-  moodle_data:
-    driver: local
-  psql_data:
     driver: local
 
 networks:
