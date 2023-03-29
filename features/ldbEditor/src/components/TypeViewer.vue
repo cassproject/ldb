@@ -32,9 +32,11 @@ let searchText = ref("");
 <template>
 <li>
     <div>{{schema.getDisplayLabel(clazz)}}</div>
+    <div><small><em>{{ schema.getDescriptionLabel(clazz) }}</em></small></div>
     <ul v-if="schema.ns[ns].classes[clazz].properties">
         <li v-for="prop of keys(schema.ns[ns].classes[clazz].properties)" v-bind:key="prop">
-            <div>{{schema.getDisplayLabel(prop)}}</div>
+                <div>{{ schema.getDisplayLabel(prop) }}</div>
+                <div><small><em>{{ schema.getDescriptionLabel(prop) }}</em></small></div>
         </li>
     </ul>
     <div v-if="schema.ns[ns].classes[clazz].superClass">

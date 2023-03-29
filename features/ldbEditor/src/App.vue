@@ -11,31 +11,31 @@ import Repo from './components/Repo.vue'
         <nav>
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/types">Type Browser</RouterLink>
+          <RouterLink to="/sheet">Sheet View</RouterLink>
           <RouterLink to="/about">About</RouterLink>
         </nav>
       </div>
     </header>
-      <Transition mode="out-in">
-        <KeepAlive>
-          <Suspense>
-            <!-- main content -->
-            <component :is="Component"></component>
+    <hr>
+    <Transition mode="out-in">
+      <KeepAlive>
+        <Suspense>
+          <!-- main content -->
+          <component :is="Component"></component>
 
-            <!-- loading state -->
-            <template #fallback>
-              Loading...
-            </template>
-          </Suspense>
-        </KeepAlive>
-      </Transition>
+          <!-- loading state -->
+          <template #fallback>
+            Loading...
+          </template>
+        </Suspense>
+      </KeepAlive>
+    </Transition>
     </template>
   </RouterView>
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
 }
 
 .logo {
@@ -70,9 +70,6 @@ nav a:first-of-type {
 
 @media (min-width: 1024px) {
   header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
   }
 
   .logo {
@@ -80,9 +77,6 @@ nav a:first-of-type {
   }
 
   header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
   }
 
   nav {
