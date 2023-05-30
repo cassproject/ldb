@@ -145,6 +145,7 @@ export const schemaStore = defineStore('schema', () => {
     await out.ingestSchema(schema["@id"],schema);
   }
   out.getDisplayLabel = (url)=>{
+    if (EcObject.isObject(url)) url = url['@id'];
     for (let n in out.ns.value)
     {
       console.log(n);
@@ -156,8 +157,10 @@ export const schemaStore = defineStore('schema', () => {
       if (out.ns.value[n].properties[url] != null) 
         return out.ns.value[n].properties[url]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
     }
+    return url;
   }
   out.getDescriptionLabel = (url)=>{
+    if (EcObject.isObject(url)) url = url['@id'];
     for (let n in out.ns.value)
     {
       console.log(n);
@@ -169,6 +172,7 @@ export const schemaStore = defineStore('schema', () => {
       if (out.ns.value[n].properties[url] != null) 
         return stripHtml(out.ns.value[n].properties[url]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"]);
     }
+    return url;
   }
 
   return out;

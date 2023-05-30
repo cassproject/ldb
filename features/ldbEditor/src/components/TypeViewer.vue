@@ -36,6 +36,7 @@ let searchText = ref("");
     <ul v-if="schema.ns[ns].classes[clazz].properties">
         <li v-for="prop of keys(schema.ns[ns].classes[clazz].properties)" v-bind:key="prop">
                 <div>{{ schema.getDisplayLabel(prop) }}</div>
+                <div v-for="range of prop['http://schema.org/rangeIncludes']" v-bind:key="range">{{ range }}</div>
                 <div><small><em>{{ schema.getDescriptionLabel(prop) }}</em></small></div>
         </li>
     </ul>
