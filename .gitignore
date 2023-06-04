@@ -65,3 +65,5 @@ coverage/lcov-report/main/
 scan-node.txt
 
 scan-standalone.txt
+
+features/documentation/v1.5/.vuepress/

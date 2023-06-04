@@ -1,5 +1,5 @@
 # LDB
-Linked Data dataBase (LDB) is a database layer that transforms Elasticsearch into a security-centric, web accessible linked data repository or database.
+Linked Data dataBase (LDB) is a database layer that transforms Elasticsearch into a security-centric, web accessible linked data database.
 
 LDB supports REST operations (GET, PUT, POST, DELETE) along with some restful bulk operations.
 
@@ -21,4 +21,4 @@ The creation of client-side applications where LDB provides access to secure or 
 
 The creation of server-side applications that want to expose their underlying data layer as linked data to prevent vendor lock in or interoperability issues.
 
-The creation of common data registries wh
+The creation of common data registries 
