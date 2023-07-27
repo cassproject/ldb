@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { schemaStore } from "@/stores/schema";
 const schema = await schemaStore();
 
@@ -17,33 +17,42 @@ const props = defineProps({
 const emit = defineEmits(['changed', 'deleted', 'created', 'selected', 'changedConfiguration'])
 
 //Expand the data so we can use the schema to look up values.
-let expandedData = ref(await jsonld.expand(props.data));
+let expandedData = ref([]);
+let selectedHeaders = ref([]);
+let go = async (first, second) => {
+    let jld = first.map((d) => d.toJson != null ? JSON.parse(d.toJson()) : d);
+    expandedData.value = await schema.expand(jld);
+    selectedHeaders.value = [...props.headers];
 
-//Count the number of times each property in the object exists.
-let propCount = {};
-for (let header of props.headers)
-{
-    if (propCount[header['@id']] === undefined)
-        propCount[header['@id']] = 0;
-    for (let datum of props.data)
-        if (datum[header['@id']] !== undefined)
-            propCount[header['@id']]++;
-}
-
-//Sort the headers by the number of times they appear in the data.
-props.headers.sort((a,b)=>{
-    return propCount[b["@id"]] - propCount[a["@id"]];
-})
-
-//Remove headers that don't appear in the data.
-for (let i = 0;i < props.headers.length;i++)
-{
-    if (propCount[props.headers[i]['@id']] === 0)
-    {
-        props.headers.splice(i,1);
-        i--;
+    //Count the number of times each property in the object exists.
+    let propCount = {};
+    for (let header of selectedHeaders.value) {
+        if (propCount[header['@id']] === undefined)
+            propCount[header['@id']] = 0;
+        for (let datum of expandedData.value)
+            if (datum[header['@id']] !== undefined)
+                propCount[header['@id']]++;
     }
-}
+
+    //Sort the headers by the number of times they appear in the data.
+    selectedHeaders.value.sort((a, b) => {
+        return propCount[b["@id"]] - propCount[a["@id"]];
+    })
+
+    //Remove headers that don't appear in the data.
+    for (let i = 0; i < selectedHeaders.value.length; i++) {
+        if (propCount[selectedHeaders.value[i]['@id']] === 0) {
+            selectedHeaders.value.splice(i, 1);
+            i--;
+        }
+    }
+
+};
+
+watch(props.data, go);
+watch(props.headers, go);
+
+await go(props.data);
 
 let change = (datum,header,index,event)=>{
     let value = event.target.innerText;
@@ -102,13 +111,13 @@ let toggleExempt = (datum,header)=>{
     <section>
         <header>
             <div class="col"><button @click="maxCells = ((maxCells + 1) % 4)">&lt;&gt;</button></div>
-            <div class="col" v-for="header in headers" v-bind:key="header['@id']" :title="header['@id']+': '+header.getDescriptionLabel()">{{header.getDisplayName()}}</div>
+            <div class="col" v-for="header in selectedHeaders" v-bind:key="header['@id']" :title="header['@id']+': '+header.getDescriptionLabel()">{{header.getDisplayName()}}</div>
         </header>
         <div class="line-break"></div>
         <template v-for="datum in expandedData" v-bind:key="datum['@id']">
             <div class="row">
                 <div class="col handle" :title="datum['@id']"><span>.</span></div>
-                <div class="col" v-for="header in headers" v-bind:key="header['@id']">
+                <div class="col" v-for="header in selectedHeaders" v-bind:key="header['@id']">
                     <span class="cell" v-if="exempt[datum['@id'] + header['@id']]" contenteditable v-for="(field, index) in getCells(datum, header)" @keydown.enter="change(datum, header, index, $event)">
                         {{ field["@value"] }}
                         <span v-if="field['@language']" class="tag right">{{ field["@language"] }}</span>
@@ -122,7 +131,7 @@ let toggleExempt = (datum,header)=>{
             </div>
             <div class="row">
                 <div class="col"></div>
-                <div class="col" v-for="header in headers" v-bind:key="header['@id']">
+                <div class="col" v-for="header in selectedHeaders" v-bind:key="header['@id']">
                     <button class="addValue" @click="addValue(datum,header,index,$event)">+</button>
                 </div>
             </div>

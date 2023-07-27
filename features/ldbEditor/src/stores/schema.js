@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import * as jsonld from 'jsonld';
+import {JsonLdDocumentLoader} from 'jsonld-document-loader';
 
 class SchemaNamespace{
   constructor(props){
@@ -9,10 +10,12 @@ class SchemaNamespace{
     let g = this["@graph"];
     for (let entry of g)
     {
+      if (entry["@type"] == null) continue;
       for (let type of entry["@type"])
       {
         if (this[type] == null)
           this[type] = {};
+        if (entry["@id"] == null) continue;
         this[type][entry["@id"]] = builder(entry);
       }
     }
@@ -124,25 +127,28 @@ export const schemaStore = defineStore('schema', () => {
 
   out.jsonld = ref({});
   out.ns = ref({});
-  out.fetched = ref({});
+  out.fetched = {};
   out.classes = ref({});
   out.properties = ref({});
   out.ingestSchema = async (source,jld)=>{
     let expanded = await jsonld.expand(jld);
-    expanded = expanded[0];
-      out.jsonld.value[source] = expanded;
-      let ns = out.ns.value[source] = new SchemaNamespace(expanded);
-      for (let n in ns.classes)
-        out.classes.value[n] = ns.classes[n];
-      for (let n in ns.properties)
-        out.properties.value[n] = ns.properties[n];
+    //Named space.
+    if (jld["@id"] != null)
+      expanded = expanded[0];
+    else
+      expanded = {"@graph":expanded,"@id":source};
+    out.jsonld.value[source] = expanded;
+    let ns = out.ns.value[source] = new SchemaNamespace(expanded);
+    for (let n in ns.classes)
+      out.classes.value[n] = ns.classes[n];
+    for (let n in ns.properties)
+      out.properties.value[n] = ns.properties[n];
   }
-  out.fetchSchema = async (url)=>{
-    if (out.fetched.value[url] != null) 
+  out.fetchSchema = async (name,url)=>{
+    if (out.fetched[url] != null) 
       return;
-    out.fetched.value[url] = true;
-    let schema = await (await fetch(url)).json();
-    await out.ingestSchema(schema["@id"],schema);
+    let schema = out.fetched[name] = out.fetched[url] = await (await fetch(url)).json();
+    await out.ingestSchema(name || schema["@id"],schema);
   }
   out.getDisplayLabel = (url)=>{
     if (EcObject.isObject(url)) url = url['@id'];
@@ -174,6 +180,27 @@ export const schemaStore = defineStore('schema', () => {
     }
     return url;
   }
+  out.expand = async (jld)=>{
+    return await jsonld.expand(jld);
+  }
+
+  jsonld.documentLoader = async function(url) {
+      if (url in out.fetched) {
+          return {
+              contextUrl: null, // this is for a context via a link header
+              document: out.fetched[url], // this is the actual document that was loaded
+              documentUrl: url // this is the actual context URL after redirects
+          };
+      } else {
+          console.log("Custom document loader..." + url);
+          await out.fetchSchema(url,url); 
+          return {
+              contextUrl: null, // this is for a context via a link header
+              document: out.fetched[url], // this is the actual document that was loaded
+              documentUrl: url // this is the actual context URL after redirects
+          };
+      }
+  };
 
   return out;
 })

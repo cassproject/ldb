@@ -10,6 +10,11 @@ const router = createRouter({
       component: HomeView
     },
     {
+      path: '/repo',
+      name: 'repo',
+      component: () => import('../views/RepoView.vue')
+    },
+    {
       path: '/types',
       name: 'types',
       component: () => import('../views/TypeBrowserView.vue')

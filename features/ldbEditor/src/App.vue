@@ -12,6 +12,7 @@ import Repo from './components/Repo.vue'
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/types">Type Browser</RouterLink>
           <RouterLink to="/sheet">Sheet View</RouterLink>
+          <RouterLink to="/repo">Repo View</RouterLink>
           <RouterLink to="/about">About</RouterLink>
         </nav>
       </div>

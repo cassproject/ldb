@@ -16,6 +16,8 @@
     "axios": "^0.26.1",
     "cassproject": "1.5.13",
     "jsonld": "^5.2.0",
+    "jsonld-document-loader": "^2.0.0",
+    "lodash": "^4.17.21",
     "pinia": "^2.0.32",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"

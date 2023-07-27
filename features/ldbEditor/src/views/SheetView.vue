@@ -4,10 +4,13 @@ import LDTable from '../components/LDTable.vue'
 
 import { schemaStore } from "@/stores/schema";
 const schema = await schemaStore();
-await schema.fetchSchema('schema.jsonld');
+await schema.fetchSchema('http://schema.org/', 'schema.jsonld');
+// await schema.fetchSchema('https://schema.org/', 'schemaorg-all-https.jsonld');
+await schema.fetchSchema('http://schema.cassproject.org/0.3', 'http://schema.cassproject.org/0.3');
 
 let data = ref([
     {
+        "@schema": "http://schema.org/",
         "@id": "http://example.com/1",
         "@type": "http://schema.org/Thing",
         "http://schema.org/name": [
