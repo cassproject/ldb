@@ -21,4 +21,5 @@ The creation of client-side applications where LDB provides access to secure or 
 
 The creation of server-side applications that want to expose their underlying data layer as linked data to prevent vendor lock in or interoperability issues.
 
-The creation of common data registries 
+The creation of common data registries.
+
