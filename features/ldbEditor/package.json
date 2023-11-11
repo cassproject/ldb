@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
-    "axios": "^0.26.1",
+    "axios": "^1.6.0",
     "cassproject": "1.5.13",
     "jsonld": "^5.2.0",
     "jsonld-document-loader": "^2.0.0",
