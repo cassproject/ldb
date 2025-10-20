@@ -1,0 +1,3 @@
+[submodule "ldb-editor"]
+    path = features/ldbEditor
+    url = ../ldb-editor.git
